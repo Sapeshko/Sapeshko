@@ -1,0 +1,36 @@
+#include <iostream>
+#include <locale.h>
+
+
+int main ()
+{
+    setlocale(LC_ALL, "Russian");
+    float N ,SUM,Y;
+    bool fail = false;
+    do {
+        fail = false;
+        std::cout << "Введите N :" << std::endl;
+        std::cin >> N;
+        if (std::cin.fail()) {
+            std::cout << " Введите корректные данные" << std::endl;
+            fail = true;
+        }
+        std::cin.clear();
+        std::cin.ignore();
+    } while (fail);
+
+    setlocale(0, "");
+    int i = 0; 
+    SUM = 0;
+    Y = (N * (N + 1)) / 2;
+    do {
+        i++;
+        SUM += i;
+    } while (i < N);
+    std::cout << "Сумма чисел от 1 до N = " << SUM << std:: endl;
+    std::cout <<"Результат n(n+1)/2 ="<< Y<< std::endl;
+    if (SUM = Y) std::cout << "- формула верна"<< std::endl;
+    else ("- формула не верна");
+    return 0;
+    
+}
