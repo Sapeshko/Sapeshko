@@ -1,0 +1,42 @@
+#include <iostream>
+#include <cmath>
+#include <locale.h>
+
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    float Y, EPS, X, N , M ;
+    EPS = 0.000001;
+    N = 0;
+    double Pi = 3.141592653589793;
+    double fail = false;
+    do {
+        fail = false;
+        std::cout << "Введите x :" << std::endl;
+        std::cin >> X;
+        if (std::cin.fail()) {
+            std::cout << " Введите корректные данные" << std::endl;
+            fail = true;
+        }
+        std::cin.clear();
+        std::cin.ignore();
+    } while (fail);
+    M = X / 180 * Pi ;
+    N = 1;
+
+    
+    do {
+        
+        Y =(( X*X * (-1) * 4 * M * M) / (2 * N * (2 * N - 1)));
+        N++;
+    } while (std::abs(Y) > EPS);
+    
+    std::cout << "Результат вычисления = " << Y << std::endl;
+    std::cout << N << std::endl;
+
+   
+    
+
+    
+
+}
