@@ -1,0 +1,28 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double N, sumY;
+            System.out.println("Введите N :");
+            while (!scanner.hasNextInt()){
+                scanner.next() ;
+                System.out.println("Введите коректные данные ");
+            }
+            N = scanner.nextFloat();
+        double i = 0;
+        double sum = 0;
+        sumY = (N * (N + 1)) / 2;
+        do {
+            i++;
+            sum += i;
+        } while (i < N);
+        System.out.println("Сумма чисел от 1 до N = " + sumY);
+        System.out.println("Результат n(n+1)/2 = " + sumY);
+        if (sum == sumY) {
+            System.out.println("- формула верна");
+        } else {
+            System.out.println("- формула не верна");
+        }
+    }
+}
