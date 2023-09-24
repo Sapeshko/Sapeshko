@@ -1,0 +1,34 @@
+Program Project1Лаба3;
+
+uses
+    System.SysUtils;
+Var
+    x, Eps, a, Result: double;
+    n: integer;
+    isCorrect: boolean;
+
+begin
+    isCorrect := False;
+
+    while not isCorrect do
+        try
+            writeln('Введите x');
+            readln(a);
+            isCorrect := True;
+        except
+            writeln('Введите корректные данные');
+        end;
+    isCorrect := False;
+    x := a / 180 * Pi;
+    Eps := 0.000001;
+    n := 1;
+
+    repeat
+        Result := ((x * x * (-1) * 4 * x * x) / (2 * n * (2 * n - 1)));
+        n := n + 1;
+    until (abs(Result)> Eps) ;
+    writeln('Результат вычисления =' , Result );
+    writeln('Количество членов = ', n);
+    readln;
+
+end.
