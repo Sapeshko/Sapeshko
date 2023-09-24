@@ -1,0 +1,35 @@
+#include <cmath>
+#include <locale.h>
+#include <iostream>
+int main() {
+	setlocale(LC_ALL, "Russian");
+	float coorX, coorY, vectH, radR;
+	bool fail = false;
+	do {
+		fail = false;
+		std::cout << " Введите координаты точки:" << std::endl;
+		std::cin >> coorX >> coorY;
+		if (std::cin.fail()) {
+			std::cout << " Введите корректные данные" << std::endl;
+			fail = true;
+		}
+		std::cin.clear();
+		std::cin.ignore();
+	} while (fail);
+	do {
+		fail = false;
+		std::cout << " Введите радиус круга:" << std::endl;
+		std::cin >> radR;
+		if (std::cin.fail()) {
+			std::cout << " Введите корректные данные" << std::endl;
+			fail = true;
+		}
+		std::cin.clear();
+		std::cin.ignore();
+	} while (fail);
+	vectH = sqrt(coorX * coorX + coorY * coorY);
+	std::cout << "Радиус-вектор равен :"<< vectH << std::endl;
+	if (vectH > radR) std::cout <<"Непринадлежит" << std::endl;
+	else std::cout << " Принадлежит" << std::endl;
+
+}
