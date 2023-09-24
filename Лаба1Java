@@ -1,0 +1,28 @@
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        float coorX, coorY, sumH, radR;
+            System.out.println("Введите координаты точки:");
+        while (!scanner.hasNextInt()){
+            scanner.next() ;
+            System.out.println("Введите коректные данные ");
+        }
+            coorX = scanner.nextFloat();
+            coorY = scanner.nextFloat();
+            System.out.println("Введите радиус круга:");
+        while (!scanner.hasNextInt()){
+            scanner.next() ;
+            System.out.println("Введите коректные данные ");
+        }
+            radR = scanner.nextFloat();
+        sumH = (float) Math.sqrt(coorX * coorX + coorY * coorY);
+        System.out.println("Радиус-вектор равен: " + sumH);
+        if (sumH > radR) {
+            System.out.println("Непринадлежит");
+        } else {
+            System.out.println("Принадлежит");
+        }
+    }
+}
