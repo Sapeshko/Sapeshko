@@ -1,0 +1,61 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        float a, b, c, x0 = 0, xn = 0, h, y;
+        boolean isCorrect = false;
+        while (!isCorrect) {
+            System.out.println("Введите значение x0 (x0<xn): ");
+            while (!scanner.hasNextInt()){
+                scanner.next() ;
+                System.out.println("Введите коректные данные ");
+            }
+            x0 = scanner.nextFloat();
+            System.out.println("Введите значение xn: ");
+            while (!scanner.hasNextInt()){
+                scanner.next() ;
+                System.out.println("Введите коректные данные ");
+            }
+            xn = scanner.nextFloat();
+
+            if (x0 > xn) {
+                System.out.println("Введите коректные данные ");
+                isCorrect = false;
+            } else {
+                isCorrect = true;
+            }
+        }
+            System.out.println("Введите коэфиценты a: ");
+        while (!scanner.hasNextInt()){
+            scanner.next() ;
+            System.out.println("Введите коректные данные ");
+        }
+            a = scanner.nextFloat();
+        System.out.println("Введите коэфиценты b: ");
+        while (!scanner.hasNextInt()){
+            scanner.next() ;
+            System.out.println("Введите коректные данные ");
+        }
+
+            b = scanner.nextFloat();
+        System.out.println("Введите коэфиценты c: ");
+        while (!scanner.hasNextInt()){
+            scanner.next() ;
+            System.out.println("Введите коректные данные ");
+        }
+            c = scanner.nextFloat();
+
+            System.out.println("Введите шаг h: ");
+        while (!scanner.hasNextInt()){
+            scanner.next() ;
+            System.out.println("Введите коректные данные ");
+        }
+            h = scanner.nextFloat();
+        while (x0 < xn) {
+            y = a * x0 * x0 + b * x0 + c;
+            System.out.println("x = " + x0 + "  y = " + y);
+            x0 = x0 + h;
+        }
+    }
+}
