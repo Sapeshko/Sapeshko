@@ -1,0 +1,92 @@
+#include <iostream>
+#include <locale.h>
+
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    float coefA, coefB, coefC, x0, xn, stepH, SUM;
+    bool isCorrect = false;
+    bool fail = false;
+    while (!isCorrect) {
+        do{
+            fail = false;
+        std::cout << "Введите значение x0 (x0<xn) : " << std::endl;
+        std::cin >> x0 ;
+        if (std::cin.fail()) {
+            std::cout << " Введите корректные данные" << std::endl;
+            fail = true;
+        }
+        std::cin.clear();
+        std::cin.ignore();
+        } while (fail);
+        do {
+            fail = false;
+            std::cout << "Введите значение xn : " << std::endl;
+            std::cin >> xn;
+            if (std::cin.fail()) {
+                std::cout << " Введите корректные данные" << std::endl;
+                fail = true;
+            }
+            std::cin.clear();
+            std::cin.ignore();
+        } while (fail);
+        if (x0 > xn) {
+            std::cout << "Введите коректные данные " << std::endl;
+            isCorrect = false;
+        }
+        else {
+            isCorrect = true;
+        }
+
+    }
+    do {
+        fail = false;
+        std::cout << "Введите коэфиценты a: " << std::endl;
+        std::cin >> coefA ;
+        if (std::cin.fail()) {
+            std::cout << " Введите корректные данные" << std::endl;
+            fail = true;
+        }
+        std::cin.clear();
+        std::cin.ignore();
+    } while (fail);
+    do {
+        fail = false;
+        std::cout << "Введите коэфиценты b: " << std::endl;
+        std::cin >> coefB;
+        if (std::cin.fail()) {
+            std::cout << " Введите корректные данные" << std::endl;
+            fail = true;
+        }
+        std::cin.clear();
+        std::cin.ignore();
+    } while (fail);
+    do {
+        fail = false;
+        std::cout << "Введите коэфиценты c: " << std::endl;
+        std::cin >> coefC;
+        if (std::cin.fail()) {
+            std::cout << " Введите корректные данные" << std::endl;
+            fail = true;
+        }
+        std::cin.clear();
+        std::cin.ignore();
+    } while (fail);
+    do {
+        fail = false;
+        std::cout << "Введите шаг h: " << std::endl;
+        std::cin >> stepH;
+        if (std::cin.fail()) {
+            std::cout << " Введите корректные данные" << std::endl;
+            fail = true;
+        }
+        std::cin.clear();
+        std::cin.ignore();
+    } while (fail);
+       
+     while(x0<xn)
+     { 
+        SUM = coefA * x0 * x0 + coefB * x0 + coefC;
+        std::cout << "x = " << x0 << "  y = " << SUM <<std:: endl;
+        x0 = x0 + stepH;
+    }
