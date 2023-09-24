@@ -1,0 +1,80 @@
+Program Progect1Лаба4;
+
+uses
+    System.SysUtils;
+
+var
+    CoofA, CoofB, CoofC, X0, Xn, H, Result: real;
+    isCorrect: boolean;
+
+begin
+    isCorrect := False;
+
+    while not isCorrect do
+        try
+            writeln('Введите коэффициенты a');
+            readln(CoofA);
+            isCorrect := True;
+        except
+            writeln('Введите корректные данные');
+        end;
+    isCorrect := False;
+    while not isCorrect do
+        try
+            writeln('Введите коэффициенты b');
+            readln(CoofB);
+            isCorrect := True;
+        except
+            writeln('Введите корректные данные');
+        end;
+    isCorrect := False;
+    while not isCorrect do
+        try
+            writeln('Введите коэффициенты c');
+            readln(CoofC);
+            isCorrect := True;
+        except
+            writeln('Введите корректные данные');
+        end;
+    isCorrect := False;
+
+    repeat
+        while not isCorrect do
+            try
+                writeln('Введите  x0(x0<xn)');
+                readln(X0);
+                isCorrect := True;
+            except
+                writeln('Введите корректные данные');
+            end;
+        isCorrect := False;
+        while not isCorrect do
+            try
+                writeln('Введите  xn');
+                readln(Xn);
+                isCorrect := True;
+            except
+                writeln('Введите корректные данные');
+            end;
+        isCorrect := False;
+
+    until Xn > X0;
+    while not isCorrect do
+        try
+            write('Введите шаг вычислений, меньше длины интервала  h=');
+            readln(H);
+            isCorrect := True;
+        except
+            writeln('Введите корректные данные');
+        end;
+    isCorrect := False;
+
+    while X0 <= Xn do
+    begin
+        Result := CoofA * X0 * X0 + CoofB * X0 + CoofC;
+        writeln('x=', X0:5:2, 'y=', Result:8:2);
+        X0 := X0 + H;
+    end;
+    readln
+
+end.
