@@ -1,0 +1,25 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double Y, EPS, X, N , M;
+        EPS = 0.000001f;
+        N = 0;
+        double Pi = 3.141592653589793;
+            System.out.println("Введите x :");
+        while (!scanner.hasNextInt()){
+            scanner.next() ;
+            System.out.println("Введите коректные данные ");
+        }
+            X = scanner.nextFloat();
+        N= 1;
+        M = X / 180 * Pi;
+        do {
+            Y = ((X*X * (-1) * 4 * M * M) / (2 * N * (2 * N - 1)));
+            N= N+1;
+        } while (Math.abs(Y) > EPS);
+        System.out.println("Результат вычисления = " + Y);
+        System.out.println(N);
+    }
+}
