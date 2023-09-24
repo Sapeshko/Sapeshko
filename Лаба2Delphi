@@ -1,0 +1,39 @@
+program Project1Лаба2;
+
+uses
+    System.SysUtils;
+
+var
+    summa, n, y, i: longint;
+    isCorrect: boolean;
+
+begin
+
+    isCorrect := False;
+
+    while not isCorrect do
+        try
+            writeln('Введите n');
+            readln(n);
+            isCorrect:=True;
+        except
+            writeln('Введите корректные данные');
+        end;
+        isCorrect:=False;
+    for i := 1 to n do
+        summa := summa + i;
+
+    y := n * (n + 1) div 2;
+
+    if y > summa then
+        writeln('Формула не верна ')
+    else
+
+      if y = summa then
+        writeln(' Формула верна')
+    else
+        writeln('Формула не верна');
+
+    readln;
+
+end.
