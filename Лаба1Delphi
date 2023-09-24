@@ -1,0 +1,37 @@
+program Project1делфи;
+
+uses
+    System.SysUtils;
+
+var
+    r, x, y, rValue: real;
+    isCorrect: boolean;
+
+begin
+    isCorrect := False;
+
+    while not isCorrect do
+        try
+            writeln('Введите радиус');
+            readln(r);
+            isCorrect:=True;
+        except
+            writeln('Введите корректные данные');
+        end;
+        isCorrect:=False;
+    while not isCorrect do
+        try
+            writeln('Введите координаты точки');
+            readln(x, y);
+            isCorrect:=True;
+        except
+            writeln('Введите корректные данные');
+        end;
+
+    if (abs((sqrt(x * x + y * y) * 1000)) <= (r * 1000)) then
+        writeln('Принадлежит')
+    else
+        writeln('Не принадлежит');
+    readln;
+
+end.
