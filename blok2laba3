@@ -1,0 +1,670 @@
+Program вроденорм;
+
+Uses
+    System.SysUtils;
+
+Const
+    MIN_SIZE = 1;
+    MAX_SIZE = 10;
+    MIN_VALUE = -1000;
+    MAX_VALUE = 1000;
+
+Type
+    TypeIntegerArray = Array Of Integer;
+    TypeMatrix = Array Of TypeIntegerArray;
+
+Procedure OutputTaskInfo();
+Begin
+    Write('Данная программа складывает либо вычитает две матрицы одной');
+    WriteLn(' размерности');
+    WriteLn('Диапазон ввода значений размера матрицы : ', MIN_SIZE, '...',
+      MAX_SIZE, '.');
+    WriteLn('Диапазон ввода значений элементов последовательностей: ',
+      MIN_VALUE, '...', MAX_VALUE, '.');
+End;
+
+Function InputPathToFile(): String;
+Var
+    Path: String;
+    IsCorrect: Boolean;
+Begin
+    Write('Укажите путь к файлу: ');
+
+    Repeat
+        IsCorrect := True;
+        Readln(Path);
+
+        If Not FileExists(Path) Then
+        Begin
+            Write('По указанному пути файл не найден! Укажите правильный путь: ');
+            IsCorrect := False;
+        End
+        Else If ExtractFileExt(Path) <> '.txt' Then
+        Begin
+            Write('Ошибка, неправильный тип файла! Укажите правильный путь: ');
+            IsCorrect := False;
+        End;
+    Until IsCorrect;
+
+    InputPathToFile := Path;
+End;
+
+Function GetVerificationOfChoice(): Integer;
+Var
+    Choice: Integer;
+    IsCorrect: Boolean;
+Begin
+    Repeat
+        IsCorrect := True;
+        Try
+            Readln(Choice);
+        Except
+            WriteLn('Проверьте корректность ввода данных!');
+            IsCorrect := False;
+        End;
+
+        If IsCorrect And ((Choice <> 0) And (Choice <> 1)) Then
+        Begin
+            WriteLn('Для выбора введите 0 или 1!');
+            IsCorrect := False;
+        End;
+
+    Until IsCorrect;
+
+    GetVerificationOfChoice := Choice;
+End;
+
+Function InputSizeFromConsole(): TypeIntegerArray;
+Var
+    Size: TypeIntegerArray;
+    Rows, Cols: Integer;
+    IsCorrect: Boolean;
+Begin
+    SetLength(Size, 2);
+    Write('Введите количество строк матриц: ');
+    Repeat
+        IsCorrect := True;
+        Try
+            Readln(Rows);
+        Except
+            WriteLn('Проверьте корректность ввода данных!');
+            IsCorrect := False;
+        End;
+
+        If IsCorrect And ((Rows < MIN_SIZE) And (Rows > MAX_SIZE)) Then
+        Begin
+            WriteLn('Введите значение от ', MIN_SIZE, ' до ', MAX_SIZE, '!');
+            IsCorrect := False;
+        End;
+
+    Until IsCorrect;
+    Write('Введите количество столбцов матриц: ');
+    Repeat
+        IsCorrect := True;
+        Try
+            Readln(Cols);
+        Except
+            WriteLn('Проверьте корректность ввода данных!');
+            IsCorrect := False;
+        End;
+
+        If IsCorrect And ((Cols < MIN_SIZE) And (Cols > MAX_SIZE)) Then
+        Begin
+            WriteLn('Введите значение от ', MIN_SIZE, ' до ', MAX_SIZE, '!');
+            IsCorrect := False;
+        End;
+
+    Until IsCorrect;
+    Size[0] := Rows;
+    Size[1] := Cols;
+    Writeln(Size[0]);
+    Writeln(Size[1]);
+    InputSizeFromConsole := Size;
+End;
+
+Function InputSizeFromFile(): TypeIntegerArray;
+Var
+    Path: String;
+    IsCorrect: Boolean;
+    InputFile: TextFile;
+    Rows, Cols: Integer;
+    Size: TypeIntegerArray;
+Begin
+    SetLength(Size, 2);
+    AssignFile(InputFile, Path);
+    Reset(InputFile);
+    IsCorrect := True;
+
+    WriteLn('Происходит чтение размера последовательности...');
+
+    Begin
+        Try
+            Read(InputFile,Rows);
+        Except
+            IsCorrect := False;
+            WriteLn('Ошибка при чтении данных! Введите размер с консоли!');
+            Size := InputSizeFromConsole();
+        End;
+
+        If (IsCorrect And (Rows < MIN_SIZE) Or (Rows > MAX_SIZE)) Then
+        Begin
+            WriteLn('В файле введен некорректный размер матрицы! Введите размер с консоли!');
+            Size := InputSizeFromConsole();
+        End;
+    End;
+    Begin
+        Try
+            Readln(InputFile, Cols);
+        Except
+            IsCorrect := False;
+            WriteLn('Ошибка при чтении данных! Введите размер с консоли!');
+            Size := InputSizeFromConsole();
+        End;
+
+        If (IsCorrect And (Cols < MIN_SIZE) Or (Cols > MAX_SIZE)) Then
+        Begin
+            WriteLn('В файле введен некорректный размер матрицы! Введите размер с консоли!');
+            Size := InputSizeFromConsole();
+        End;
+    End;
+    Size[0] := Rows;
+    Size[1] := Cols;
+    CloseFile(InputFile);
+    InputSizeFromFile := Size;
+End;
+
+Procedure OutputSize(Const Choice, S: Integer; Path: String;
+  Const Size: TypeIntegerArray);
+Var
+    OutputFile: TextFile;
+    IsCorrect: Boolean;
+    Rows, Cols: Integer;
+Begin
+Writeln(Size[0]);
+    Rows := Size[0];
+    Cols := Size[1];
+    If Choice = 0 Then
+        WriteLn('Размер матрицы равен: ', Rows, Cols);
+
+    If Choice = 1 Then
+    Begin
+        WriteLn('Вывод значения раземера в файл...');
+
+        Repeat
+            IsCorrect := True;
+            AssignFile(OutputFile, Path);
+
+            Try
+                Rewrite(OutputFile);
+            Except
+                WriteLn('Ошибка! Измените параметры файла или укажите новую ссылку!');
+                IsCorrect := False;
+                Path := InputPathToFile();
+            End;
+
+        Until IsCorrect;
+
+        Write(OutputFile, Rows, Cols);
+        Write(OutputFile, #13);
+
+        Close(OutputFile);
+        WriteLn('Данные успешно записаны в файл!');
+    End;
+End;
+
+Function FillNumsFromConsole(Rows, Cols: Integer; Const Size: TypeIntegerArray)
+  : TypeMatrix;
+Var
+    IsCorrect: Boolean;
+    I, J, MoreRows: Integer;
+    NumbersArray, A, B: TypeMatrix;
+Begin
+    Rows := Size[0];
+    Cols := Size[1];
+    Writeln(Rows);
+    Writeln(Cols);
+    MoreRows := 2 * Rows;
+    SetLength(A, Rows, Cols);
+    SetLength(B, Rows, Cols);
+    SetLength(NumbersArray, MoreRows, Cols);
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            WriteLn('Введите элемент матрицы a под индексом : ', I + 1,
+              '_', J + 1);
+
+            Repeat
+                IsCorrect := True;
+
+                Try
+                    Read(A[I, J]);
+                Except
+                    WriteLn('Проверьте корректность ввода данных!');
+                    IsCorrect := False;
+                End;
+
+                If (IsCorrect And ((A[I, J] < MIN_VALUE) Or
+                  (A[I, J] > MAX_VALUE))) Then
+                Begin
+                    WriteLn('Введите число от ', MIN_VALUE, ' до ',
+                      MAX_VALUE, '!');
+                    IsCorrect := False;
+                End;
+
+            Until IsCorrect;
+        End;
+        Readln;
+    End;
+
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            WriteLn('Введите элемент матрицы b под индексом : ', I + 1,
+              '_', J + 1);
+
+            Repeat
+                IsCorrect := True;
+
+                Try
+                    Read(B[I, J]);
+                Except
+                    WriteLn('Проверьте корректность ввода данных!');
+                    IsCorrect := False;
+                End;
+
+                If (IsCorrect And ((B[I, J] < MIN_VALUE) Or
+                  (B[I, J] > MAX_VALUE))) Then
+                Begin
+                    WriteLn('Введите число от ', MIN_VALUE, ' до ',
+                      MAX_VALUE, '!');
+                    IsCorrect := False;
+                End;
+
+            Until IsCorrect;
+        End;
+    End;
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            NumbersArray[I, J] := A[I, J];
+        End;
+    End;
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            NumbersArray[I + Rows, J] := B[I, J];
+        End;
+    End;
+
+    FillNumsFromConsole := NumbersArray;
+End;
+
+Function FillMatrixFromFile(Const Path: String): TypeMatrix;
+Var
+    Rows, Cols, MoreRows: Integer;
+    IsCorrect: Boolean;
+    InputFile: TextFile;
+    I, J, Count: Byte;
+    Symbol: AnsiChar;
+    NumbersArray, A, B: TypeMatrix;
+    Size: TypeIntegerArray;
+Begin
+    AssignFile(InputFile, Path);
+    Reset(InputFile);
+    Readln(InputFile);
+
+    Count := 0;
+
+    WriteLn('Происходит чтение последовательностей...');
+
+    While Not Eof(InputFile) Do
+    Begin
+        Read(InputFile, Symbol);
+
+        If Symbol = ' ' Then
+            Inc(Count);
+    End;
+
+    Close(InputFile);
+
+    If Count > Rows * (Cols ) Then
+    Begin
+        WriteLn('Ошибка при чтении последовательности! Введите последовательность с консоли!');
+        NumbersArray := FillNumsFromConsole(Rows, Cols, Size);
+    End
+    Else
+    Begin
+        AssignFile(InputFile, Path);
+        Reset(InputFile);
+        Readln(InputFile);
+        Rows := Size[0];
+        Cols := Size[1];
+        Writeln(Rows);
+        Writeln(Cols);
+        MoreRows := 2 * Rows;
+        SetLength(A, Rows, Cols);
+        SetLength(B, Rows, Cols);
+        SetLength(NumbersArray, MoreRows, Cols);
+
+        For I := 1 To Rows Do
+        Begin
+            For J := 1 To Cols Do
+            Begin
+                Write('Введите элемент матрицы a под индексом : ', I, '_', J);
+
+                Repeat
+                    IsCorrect := True;
+
+                    Try
+                        Read(InputFile, A[I, J]);
+                    Except
+                        WriteLn('Проверьте корректность ввода данных!');
+                        IsCorrect := False;
+                    End;
+
+                    If (IsCorrect And ((A[I, J] < MIN_VALUE) Or
+                      (A[I, J] > MAX_VALUE))) Then
+                    Begin
+                        WriteLn('Введите число от ', MIN_VALUE, ' до ',
+                          MAX_VALUE, '!');
+                        IsCorrect := False;
+                    End;
+
+                Until IsCorrect;
+            End;
+            Readln;
+        End;
+
+        For I := 0 To Rows - 1 Do
+        Begin
+            For J := 0 To Cols - 1 Do
+            Begin
+                Write('Введите элемент матрицы a под индексом : ', I, '_', J);
+
+                Repeat
+                    IsCorrect := True;
+
+                    Try
+                        Read(InputFile, B[I, J]);
+                    Except
+                        WriteLn('Проверьте корректность ввода данных!');
+                        IsCorrect := False;
+                    End;
+
+                    If (IsCorrect And ((B[I, J] < MIN_VALUE) Or
+                      (B[I, J] > MAX_VALUE))) Then
+                    Begin
+                        WriteLn('Введите число от ', MIN_VALUE, ' до ',
+                          MAX_VALUE, '!');
+                        IsCorrect := False;
+                    End;
+
+                Until IsCorrect;
+            End;
+        End;
+    End;
+    Close(InputFile);
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            NumbersArray[I, J] := A[I, J];
+        End;
+    End;
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            NumbersArray[I + Rows, J] := B[I, J];
+        End;
+    End;
+    FillMatrixFromFile := NumbersArray;
+End;
+
+Function InputFlagFromConsole(): Integer;
+Var
+    Flag: Integer;
+    IsCorrect: Boolean;
+Begin
+    Write('Введите значение параметра флаг: ');
+
+    Repeat
+        IsCorrect := True;
+        Try
+            Readln(Flag);
+        Except
+            WriteLn('Проверьте корректность ввода данных!');
+            IsCorrect := False;
+        End;
+
+        If IsCorrect And ((Flag < MIN_SIZE) And (Flag > MAX_SIZE)) Then
+        Begin
+            WriteLn('Введите значение от ', MIN_SIZE, ' до ', MAX_SIZE, '!');
+            IsCorrect := False;
+        End;
+
+        If IsCorrect And ((Flag <> 0) And (Flag <> 1)) Then
+        Begin
+            WriteLn('Для выбора введите 0 или 1!');
+            IsCorrect := False;
+        End;
+
+    Until IsCorrect;
+
+    InputFlagFromConsole := Flag;
+End;
+
+Function InputFlagFromFile(Const Path: String): Integer;
+Var
+    Flag: Integer;
+    IsCorrect: Boolean;
+    InputFile: TextFile;
+    Size: TypeIntegerArray;
+Begin
+    AssignFile(InputFile, Path);
+    Reset(InputFile);
+
+    IsCorrect := True;
+
+    WriteLn('Происходит чтение параметра флаг...');
+
+    Try
+        Readln(InputFile, Flag);
+    Except
+        IsCorrect := False;
+        WriteLn('Ошибка при чтении данных! Введите размер с консоли!');
+        Flag := InputFlagFromConsole();
+    End;
+
+    If (IsCorrect And (Flag < MIN_SIZE) Or (Flag > MAX_SIZE)) Then
+    Begin
+        WriteLn('В файле введен некорректный размер матрицы! Введите размер с консоли!');
+        Flag := InputFlagFromConsole();
+    End;
+
+    If IsCorrect And ((Flag <> 0) And (Flag <> 1)) Then
+    Begin
+        WriteLn('Для выбора введите 0 или 1!');
+        IsCorrect := False;
+    End;
+
+    InputFlagFromFile := Flag;
+    CloseFile(InputFile);
+End;
+
+Function SumOrDiffMatrices(Const NumbersArray: TypeMatrix;A, B: TypeMatrix;
+Rows, Cols: Integer; Const Flag: Integer): TypeMatrix;
+Var
+    C: TypeMatrix;
+    I, J: Integer;
+    Size: TypeIntegerArray;
+Begin
+    setlength(Size,2);
+    Writeln('123');
+    Rows := Size[0];
+    Cols := Size[1];
+    Writeln(Rows);
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            A[I, J] := NumbersArray[I, J];
+            Writeln(A[i][j]);
+        End;
+    End;
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            B[I, J] := NumbersArray[I + Rows, J];
+            Writeln(B[i][j]);
+        End;
+    End;
+    SetLength(C, Rows, Cols);
+    // Выполняем сложение или вычитание матриц
+    For I := 0 To Rows - 1 Do
+    Begin
+        For J := 0 To Cols - 1 Do
+        Begin
+            If Flag = 1 Then
+            begin
+                C[I, J] := A[I, J] + B[I, J]; // сложение
+                Writeln(C[i][j])
+            end
+            Else If Flag = 0 Then
+                C[I, J] := A[I, J] - B[I, J]; // вычитание
+        End;
+    End;
+
+    SumOrDiffMatrices := C;
+End;
+
+Procedure OutputResult(Const Choice: Integer; Path: String;Const C : TypeMatrix);
+Var
+    IsCorrect: Boolean;
+    Output: TextFile;
+    Rows, Cols, I, J: Integer;
+Begin
+    If Choice = 0 Then
+    Begin
+        WriteLn('Вывод результата: ');
+        For I := 0 To Rows Do
+        Begin
+            For J := 0 To Cols  Do
+            Begin
+                Write(C[I, J], ' ');
+            End;
+            Writeln;
+        End;
+    End;
+
+    If Choice = 1 Then
+    Begin
+        WriteLn('Вывод результата в файл...');
+
+        Repeat
+            IsCorrect := True;
+            AssignFile(Output, Path);
+
+            Try
+                Append(Output);
+            Except
+                WriteLn('Ошибка! Измените параметры файла или укажите новую ссылку!');
+                IsCorrect := False;
+                Path := InputPathToFile();
+            End;
+
+        Until IsCorrect;
+
+        For I := 0 To Rows - 1 Do
+        Begin
+            For J := 0 To Cols - 1 Do
+            Begin
+                Write(Output, C[I, J], ' ');
+            End;
+            Writeln(Output);
+        End;
+
+        Close(Output);
+        WriteLn('Данные успешно записаны в файл!');
+    End;
+End;
+
+Function ProcessUserInput(): TypeMatrix;
+Var
+    PathToIn, Path: String;
+    ChoiceForInput, Rows, Cols, Flag: Integer;
+    NumbersArray: TypeMatrix;
+    Size: TypeIntegerArray;
+Begin
+    WriteLn('Вы желаете вводить данные с консоли(0) или из файла(1)?');
+    ChoiceForInput := GetVerificationOfChoice();
+
+    If ChoiceForInput = 0 Then
+    Begin
+        Size := InputSizeFromConsole();
+        NumbersArray := FillNumsFromConsole(Rows, Cols, Size);
+        Flag := InputFlagFromConsole();
+    End;
+
+    If ChoiceForInput = 1 Then
+    Begin
+        PathToIn := InputPathToFile();
+        Size := InputSizeFromFile();
+        NumbersArray := FillMatrixFromFile(PathToIn);
+        Flag := InputFlagFromFile(Path);
+    End;
+
+    ProcessUserInput := NumbersArray;
+End;
+
+Procedure ProcessUserOutput(Const Answer: TypeMatrix);
+Var
+    C: TypeMatrix;
+    PathToOut: String;
+    ChoiceForOutput, S: Integer;
+    Size: TypeIntegerArray;
+Begin
+    WriteLn('Вы желаете получть данные в консоль(0) или в файл(1)?');
+    ChoiceForOutput := GetVerificationOfChoice();
+    If ChoiceForOutput = 1 Then
+        PathToOut := InputPathToFile();
+    If ChoiceForOutput = 0 Then
+    Begin
+        //(ChoiceForOutput, S, PathToOut, Size);
+        OutputResult(ChoiceForOutput, PathToOut,C);
+        Readln;
+    End;
+End;
+
+Procedure Main();
+Var
+    InpData: TypeMatrix;
+    Rows, Cols, Flag: Integer;
+    Answer, A, B, NumbersArray: TypeMatrix;
+    Size: TypeIntegerArray;
+Begin
+    setlength(Size,2);
+    Rows := Size[0];
+    Cols := Size[1];
+    OutputTaskInfo();
+    InpData := ProcessUserInput();
+    SumOrDiffMatrices(NumbersArray, A, B, Rows, Cols, Flag);
+    ProcessUserOutput(Answer);
+End;
+Var
+    Rows, Cols: Integer;
+    Size: TypeIntegerArray;
+Begin
+    setlength(Size,2);
+    Rows := Size[0];
+    Cols := Size[1];
+    Main();
+    Readln;
+    Readln;
+
+End.
